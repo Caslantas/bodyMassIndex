@@ -1,95 +1,55 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client"
+import { useMemo, useState } from 'react';
 
 export default function Home() {
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+ 
+
+  const BKI = useMemo(() => {
+    const weightNum=parseFloat(weight)
+    const heightNum=parseFloat(height)
+    if (!isNaN(weightNum)&& !isNaN(heightNum && weightNum>0 && heightNum>0)) {
+      const heightCM = height / 100;
+      return (weightNum / (heightCM * heightCM)).toFixed(2);
+    }
+    return null;
+  }, [weight, height]);
+
+  let category = "";
+  
+  if (BKI !== null) {
+    if (BKI < 18.5) {
+      category = "Zayıf";
+     
+    } else if (BKI >= 18.5 && BKI < 24.5) {
+      category = "Normal";
+     
+    } else if (BKI >= 24.5 && BKI < 29.9) {
+      category = "Kilolu";
+     
+    } else if (BKI >= 30) {
+      category = "Obez";
+      
+    }
+  }
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
+    <div className='container'>
+      <form>
+        <label>Kilonuz:</label>
+        <input type='number' min="0" value={weight} onChange={(e) => setWeight(e.target.value)} />
+        <label>Boyunuz:</label>
+        <input type='number' min="0" value={height} onChange={(e) => setHeight(e.target.value)} />
+      </form>
+      {BKI !== null && (
         <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+          <p>Vücut Kitle İndex: {BKI}</p>
+          <h3>Durum: {category}</h3>
+       
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+      )}
+    {BKI !== null && BKI>25 ? <img src='/üzgün.jpg' alt='üzgün'/>: <img src='/mutlu.jpg' alt='mutlu'/>}
+    </div>
+  );
 }
